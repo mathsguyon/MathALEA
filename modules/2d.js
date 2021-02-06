@@ -1612,12 +1612,15 @@ function Segment(arg1, arg2, arg3, arg4, color) {
     let B = point(this.x2, this.y2);
     let l=longueur(A,B)
     let dx=(B.xSVG(coeff)-A.xSVG(coeff))/l/2,dy=(B.ySVG(coeff)-A.ySVG(coeff))/l/2
-    let code =`<path d="M ${A.xSVG(coeff)},${A.ySVG(coeff)} C ${Math.round(A.xSVG(coeff),0)},${arrondi(A.ySVG(coeff))} `
+    let code =`<path d="M ${A.xSVG(coeff)}, ${A.ySVG(coeff)} Q ${Math.round(A.xSVG(coeff),0)}, ${arrondi(A.ySVG(coeff),0)} `
+    let p=1
     for (let k=0;k<2*l+0.25;k+=0.25) {
-      code +=`${Math.round(A.xSVG(coeff)+k*dx+randint(-1,1)*amp)},${Math.round(A.ySVG(coeff)+k*dy+randint(-1,1)*amp)} `
+      p++
+      code +=`${Math.round(A.xSVG(coeff)+k*dx+randint(-1,1)*amp)}, ${Math.round(A.ySVG(coeff)+k*dy+randint(-1,1)*amp)} `
     }
-    code +=` ${Math.round(B.xSVG(coeff),0)},${arrondi(B.ySVG(coeff))} ${B.xSVG(coeff)},${B.ySVG(coeff)} " stroke="${this.color}" ${this.style}/>`
-    return code;
+   if(p%2==1) code +=` ${Math.round(B.xSVG(coeff),0)}, ${arrondi(B.ySVG(coeff),0)}" stroke="${this.color}" ${this.style}/>`
+   else  code +=` ${Math.round(B.xSVG(coeff),0)}, ${arrondi(B.ySVG(coeff),0)} ${arrondi(B.xSVG(coeff),0)}, ${arrondi(B.ySVG(coeff),0)}" stroke="${this.color}" ${this.style}/>`
+   return code;
  }
   this.tikzml = function(amp){
     let A = point(this.x1, this.y1);
@@ -3184,15 +3187,15 @@ export function dansLaCibleRonde(x,y,rang,taille,cellule) {
  * @Auteur Jean-Claude Lhote
  * @param {} param0 
  */
-function CibleCarree({x=0,y=0,rang=4,num,taille=0.6}){
+function CibleCarree({x=0,y=0,rang=4,num,taille=0.6,color='grey',opacite=0.5}){
   ObjetMathalea2D.call(this);
   this.x=x;
   this.y=y;
   this.rang=rang;
   if (typeof(num)!='undefined') this.num=num;
   this.taille=taille;
-  this.color='gray';
-  this.opacite=0.5;
+  this.color=color;
+  this.opacite=opacite;
   let objets=[]
   let numero
   if (typeof(num)!='undefined') {
@@ -3202,6 +3205,7 @@ function CibleCarree({x=0,y=0,rang=4,num,taille=0.6}){
     numero.contour=true
     objets.push(numero)
   }
+  this.num=num
     let lettre,chiffre
   objets.push(grille(calcul(x-rang*this.taille/2),calcul(y-rang*this.taille/2),calcul(x+rang*this.taille/2),calcul(y+rang*this.taille/2),this.color,this.opacite,this.taille,false))
   for (let i=0;i<rang;i++) {
