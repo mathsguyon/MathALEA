@@ -1,6 +1,6 @@
 import Exercice from '../ClasseExercice.js';
 import {liste_de_question_to_contenu,randint,choice,combinaison_listes,ecriture_parenthese_si_negatif,ecriture_algebrique} from "/modules/outils.js"
-import { repere2, courbe2, mathalea2d, point, tracePoint, labelPoint, vecteur } from "/modules/2d.js"
+import { repere2, courbe2, mathalea2d, point, tracePoint, labelPoint, vecteur, representantNomme } from "/modules/2d.js"
 
 /**
  * @Auteur Stéphane Guyon
@@ -20,7 +20,7 @@ export default function calculer_coordonnees_vecteurs() {
         let type_de_questions
 
         let liste_type_de_questions = combinaison_listes(type_de_questions_disponibles, this.nb_questions);
-        for (let i = 0, A,B,t,l,r,ux, uy, xA, yA, xB, yB,xC,yC, v,V,texte, texte_corr, cpt = 0; i < this.nb_questions && cpt < 50;) {
+        for (let i = 0, A,B,t,l,r,ux, uy, xA, yA, xB, yB,xC,yC, v,V,V1,C,texte, texte_corr, nom, cpt = 0; i < this.nb_questions && cpt < 50;) {
             type_de_questions = liste_type_de_questions[i];
             switch (type_de_questions) {
                 // Cas par cas, on définit le type de nombres que l'on souhaite
@@ -45,16 +45,16 @@ export default function calculer_coordonnees_vecteurs() {
                     B = point(xB, yB,'B')  
                     v=vecteur(A,B)
                     V=v.representant(A)                   
-                    
+                    V.color='red'    
                     l = labelPoint(A,B)// Variable qui trace les nom s A et B
                     l.color='red' 
-                    V.color='red'                   
+                    nom=v.representantNomme(A,'v',3)              
                     texte += mathalea2d({
                       xmin: -8,
                       ymin: -8,
                       xmax: 8,
                       ymax: 8
-                    }, r,l,V);// On trace le graphique
+                    }, r,l,V,nom);// On trace le graphique
 
 
 
@@ -91,8 +91,17 @@ export default function calculer_coordonnees_vecteurs() {
                     texte_corr += ` <br>On applique ici aux données de l'énoncé :`;
                     texte_corr += ` $\\overrightarrow{AB}\\begin{pmatrix}${xB}-${ecriture_parenthese_si_negatif(xA)}  \\\\${yB}-${ecriture_parenthese_si_negatif(yA)}\\end{pmatrix}$<br>`;
                     texte_corr += `Ce qui donne au final : $\\overrightarrow{AB}\\begin{pmatrix}${xB - xA}  \\\\${yB - yA}\\end{pmatrix}$<br>`;
-
-
+                    A = point(xA, yA,'A')
+                    B = point(xB, yB,'B')  
+                    v=vecteur(A,B)
+                    V=v.representant(A)                   
+                    V.color='red'    
+                    texte_corr +=mathalea2d({
+                        xmin: -8,
+                        ymin: -8,
+                        xmax: 8,
+                        ymax: 8
+                      }, r, t,l);// On trace le graphique
 
                     break;
                 case 3:
@@ -125,7 +134,20 @@ export default function calculer_coordonnees_vecteurs() {
                         texte_corr +=`$\\begin{cases}x-${ecriture_parenthese_si_negatif(xC)}=${xB - xA} \\\\y-${ecriture_parenthese_si_negatif(yC)}=${yB - yA}\\end{cases}<br>$`
                         texte_corr +=`$\\iff \\begin{cases}x=${xB - xA}${ecriture_algebrique(xC)} \\\\y=${yB - yA}${ecriture_algebrique(yC)}\\end{cases}$<br>`
                         texte_corr +=`$\\iff \\begin{cases}x=${xB - xA+xC} \\\\y=${yB - yA+yC}\\end{cases}$`
-
+                        A = point(xA, yA,'A')
+                        B = point(xB, yB,'B')  
+                        C=point(xC,yC,'C')
+                        v=vecteur(A,B)
+                       
+                        V=v.representant(A) 
+                        V1=v.representant(C)              
+                        V.color='red'    
+                        texte_corr +=mathalea2d({
+                            xmin: -8,
+                            ymin: -8,
+                            xmax: 8,
+                            ymax: 8
+                          }, r, t,l);// On trace le graphique
     
                         break;
 
